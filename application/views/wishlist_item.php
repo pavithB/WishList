@@ -87,7 +87,7 @@
 				   <div class="md-form">
                         <i class="fa fa-envelope prefix"></i>
                         <input type="text" name="full_name" id="form1" class="form-control">
-                        <label for="form2">Full Name:</label>
+                        <label for="form1">Full Name:</label>
 					</div>
 					<div class="md-form">
                         <i class="fa fa-envelope prefix"></i>
@@ -97,7 +97,7 @@
                     <div class="md-form">
                         <i class="fa fa-envelope prefix"></i>
                         <input type="text" name="username" id="form3" class="form-control">
-                        <label for="form2">username:</label>
+                        <label for="form3">username:</label>
                     </div>
                     <div class="md-form">
                         <i class="fa fa-lock prefix"></i>
@@ -107,12 +107,12 @@
 					<div class="md-form">
                         <i class="fa fa-envelope prefix"></i>
                         <input type="text" name="wishlist_name" id="form5" class="form-control">
-                        <label for="form2">Wish LIst Name:</label>
+                        <label for="form5">Wish LIst Name:</label>
 					</div>
 					<div class="md-form">
                         <i class="fa fa-envelope prefix"></i>
                         <input type="text" name="wishlist_description" id="form6" class="form-control">
-                        <label for="form2">Description</label>
+                        <label for="form6">Description</label>
                     </div>
                     <div class="text-center">
                         <button type="submit" style="background:#20c997" id="signup-btn" class="btn btn-deep signupbtn">Login</button>
@@ -124,12 +124,14 @@
         </div>
     </div>
 </div>
-  </script>
+</script>
 
 	<script type="text/template" id="item-list-template">
 		<a href="#/new" class="btn btn-primary">New</a>
-		<a href="#/new" style="background:green" class="btn">share</a>
-    <hr />
+		<button type="button" onclick="shareUrl()" class="btn btn-danger share">share</button>
+            <span style="width: calc(100% - 50%); display: inline-flex;"><input type="text" style="display:none" name="shareable-url" id="form1" class="form-control"></span>
+			<button type="button" class="btn logout" >LOGOUT</button>
+			<hr />
     <table class="table striped">
       <thead>
         <tr>
@@ -148,6 +150,31 @@
             <td><%= htmlEncode(item.get('price')) %></td>
             <td><%= htmlEncode(item.get('priority')) %></td>
             <td><a class="btn" href="#/edit/<%= item.id %>">Edit</a></td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </script>
+
+  <script type="text/template" id="share-list-template">
+    <hr />
+    <table class="table striped">
+      <thead>
+        <tr>
+          <th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% _.each(list, function(item) { %>
+          <tr>
+          <!-- <td><%= item.get('title') %></td>
+            <td><%= item.get('description') %></td>
+            <td><%= item.get('price') %></td> -->
+            <td><%= htmlEncode(item.get('title')) %></td>
+            <td><%= htmlEncode(item.get('description')) %></td>
+            <td><%= htmlEncode(item.get('url')) %></td>
+            <td><%= htmlEncode(item.get('price')) %></td>
+            <td><%= htmlEncode(item.get('priority')) %></td>
           </tr>
         <% }); %>
       </tbody>
@@ -179,6 +206,20 @@
 	<script>
 		// var token = "";		
 			// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJmdWxsX25hbWUiOiJwYXZpdGggYnVkZGhpbWEiLCJ1c2VybmFtZSI6InBhdml0aGIiLCJlbWFpbCI6InBhdml0aEBnbWFpbC5jb20iLCJ0aW1lIjoxNTQ4MjU2OTAxfQ.DTSShZ5816yRs7MUAQelQVtvdmRUEgBjMgeP3E90pTk";
+
+
+			var shareUrl = function(){
+				var shareURL = window.location.href;
+				console.log(shareURL);
+				// var res = shareURL.replace("wishlist", "sharelist");
+				var newstr = shareURL.replace(new RegExp("\\b"+"wishlist"+"\\b"), "sharelist");
+				document.getElementById("form1").value = newstr;
+				document.getElementById("form1").style.display = "block";
+				  console.log(newstr);
+
+
+				// return false;
+			} 
 
 		function htmlEncode(value) {
 			return $('<div/>').text(value).html();
@@ -284,6 +325,21 @@
 		
 		var WishListView = Backbone.View.extend({
 			el: '.page',
+			event: {
+				'click .share': 'shareView',
+				'click .logout': 'logout'
+			},
+			shareView: function (ev) {
+				// var shareURL = window.location.href;
+				// console.log(shareURL);
+				// return false;
+			},
+			logout: function(ev){
+				sessionstorage.clear();
+				router.navigate('', {
+							trigger: true
+						});
+			}
 			render: function (options) {
 				var that = this;
 				var list = new WishList();
@@ -381,6 +437,34 @@
 		});
 		var itemEditView = new ItemEditView();
 
+		//////////
+		var ShareListView = Backbone.View.extend({
+			el: '.page',
+			render: function (options) {	
+				var that = this;
+				var list = new WishList();
+				// collection.fetch({ data: $.param({ page: 1}) });
+
+				list.fetch({
+					data: $.param({id: options.id}),url:"/item/sharelist",
+					success: function (list) {
+						// var data = list.models[0].attributes.data;
+						var template = _.template($('#share-list-template').html(), {
+							list: list.models
+						});
+						that.$el.html(template);
+					},error: function(user){
+						router.navigate('', {
+							trigger: true
+						});
+					}
+				})
+			}
+		});
+
+		var sharelistView = new ShareListView();
+		//////////
+
 		var Router = Backbone.Router.extend({
 			routes: {
 				"": "login",
@@ -388,6 +472,7 @@
 				"edit/:id": "edit",
 				"new": "edit",
 				"wishlist/:id": "wishlist",
+				"sharelist/:id": "sharelist"
 			}
 		});
 		var router = new Router;
@@ -407,6 +492,11 @@
 		})
 		router.on('route:signup', function () {
 			signupView.render();
+		})
+		router.on('route:sharelist', function (id) {
+			sharelistView.render({
+				id: id
+			});
 		})
 
 		Backbone.history.start();

@@ -82,6 +82,9 @@ $route['api/item/(:num)']["put"] = 'api/items/item/$1';
 // View all Items in Wishlist 
 $route['api/item']["GET"] = 'api/items/wishlist';
 
+// View all Items in sharelist 
+$route['api/item/sharelist']["GET"] = 'api/items/sharelist';
+
 $route['api/item/(:num)']["GET"] = 'api/items/item/$1';
 
 // Users item Routes

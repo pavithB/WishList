@@ -144,6 +144,54 @@ class Items extends \Restserver\Libraries\REST_Controller
 
     }
 
+    
+/**
+     * View Items in sharelist
+     * -------------------------
+     * @method: GET
+     */
+    public function sharelist_get()
+    {
+       
+            $_GET = $this->security->xss_clean($_GET);
+
+            $id = $this->input->get('id');
+
+            if (empty($id) AND !is_numeric($id))
+            {
+                $this->response(['status' => FALSE, 'message' => 'Invalid user id' ], REST_Controller::HTTP_NOT_FOUND);
+            }
+            else
+            {
+            
+            // Load Item Model
+            $this->load->model('item_model', 'ItemModel');
+            
+            // Load Login Function
+            $output = $this->ItemModel->viewAllItems($id);
+            if (!empty($output) AND $output != FALSE)
+            {
+                 
+                // data retrive sucessfull
+                $message = [
+                    'status' => true,
+                    'data' => $output,
+                    'message' => "user: ".$id." wish list"
+                ];
+                $this->response($output, REST_Controller::HTTP_OK);
+                
+            } else 
+            {
+                 // no items for user
+                $message = [
+                    'status' => FALSE,
+                    'message' => "no item available"
+                ];
+                $this->response($message, REST_Controller::HTTP_OK);
+            }
+        }
+
+    }
 
     /**
      * Add new Item with API
