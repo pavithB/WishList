@@ -134,7 +134,7 @@ class Items extends \Restserver\Libraries\REST_Controller
                     'status' => FALSE,
                     'message' => "no item available"
                 ];
-                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+                $this->response($message, REST_Controller::HTTP_OK);
             }
         }
         } else

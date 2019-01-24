@@ -29,16 +29,25 @@ class Users extends \Restserver\Libraries\REST_Controller
 
         # XSS Filtering (https://www.codeigniter.com/user_guide/libraries/security.html)
         $_POST = $this->security->xss_clean($_POST);
+
+        $this->form_validation->set_data([
+            'full_name' => $this->post('full_name', TRUE),
+            'username' => $this->post('username', TRUE),
+            'email' => $this->post('email', TRUE),
+            'password' => $this->post('password', TRUE),
+            'wishlist_name' => $this->post('wishlist_name', TRUE),
+            'wishlist_description' => $this->post('wishlist_description', TRUE)
+        ]);
         
         # Form Validation
-        $this->form_validation->set_rules('fullname', 'Full Name', 'trim|required|max_length[50]');
+        $this->form_validation->set_rules('full_name', 'Full Name', 'trim|required|max_length[50]');
         $this->form_validation->set_rules('username', 'Username', 'trim|required|is_unique[users.username]|alpha_numeric|max_length[20]',
-            array('is_unique' => 'This %s already exists please enter another username')
-        );
+            array('is_unique' => 'This %s already exists please enter another username'));
         $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|max_length[80]|is_unique[users.email]',
-            array('is_unique' => 'This %s already exists please enter another email address')
-        );
+            array('is_unique' => 'This %s already exists please enter another email address'));
         $this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[100]');
+        $this->form_validation->set_rules('wishlist_name', 'Wishlist Name', 'trim|required|max_length[100]');
+        $this->form_validation->set_rules('wishlist_description', 'Wishlist Description', 'trim|required|max_length[1000]');
         if ($this->form_validation->run() == FALSE)
         {
             // Form Validation Errors
@@ -53,10 +62,12 @@ class Users extends \Restserver\Libraries\REST_Controller
         else
         {
             $insert_data = [
-                'full_name' => $this->input->post('fullname', TRUE),
-                'email' => $this->input->post('email', TRUE),
-                'username' => $this->input->post('username', TRUE),
-                'password' => md5($this->input->post('password', TRUE)),
+                'full_name' => $this->post('full_name', TRUE),
+                'email' => $this->post('email', TRUE),
+                'username' => $this->post('username', TRUE),
+                'password' => md5($this->post('password', TRUE)),
+                'wishlist_name' => $this->post('wishlist_name', TRUE),
+                'wishlist_description' => $this->post('wishlist_description', TRUE)
             ];
 
             // Insert User in Database
@@ -98,6 +109,12 @@ class Users extends \Restserver\Libraries\REST_Controller
         # XSS Filtering (https://www.codeigniter.com/user_guide/libraries/security.html)
         $_POST = $this->security->xss_clean($_POST);
         
+        $this->form_validation->set_data([
+            'username' => $this->post('username', TRUE),
+            'password' => $this->post('password', TRUE)
+        ]);
+
+
         # Form Validation
         $this->form_validation->set_rules('username', 'Username', 'trim|required');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[100]');
@@ -115,7 +132,7 @@ class Users extends \Restserver\Libraries\REST_Controller
         else
         {
             // Load Login Function
-            $output = $this->UserModel->user_login($this->input->post('username'), $this->input->post('password'));
+            $output = $this->UserModel->user_login($this->post('username'), $this->post('password'));
             if (!empty($output) AND $output != FALSE)
             {
                 // Load Authorization Token Library
