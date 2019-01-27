@@ -10,12 +10,12 @@
 	<!-- Material Design Bootstrap -->
 	<link href="<?php echo base_url(); ?>assest/css/mdb.min.css" rel="stylesheet">
 </head>
+
 <body>
-
-
 	<div class="container">
 		<h1>WISH LIST</h1>
 		<hr />
+		<div class="newItem"></div>
 		<div class="page"></div>
 	</div>
 
@@ -68,7 +68,7 @@
   </script>
 
 
-  <script type="text/template" id="user-signup-template">
+	<script type="text/template" id="user-signup-template">
 		<div class="container-fluid">
     <div style='justify-content: center;' class="row">
         <div style="padding-top: 12%;
@@ -127,41 +127,116 @@
 </script>
 
 	<script type="text/template" id="item-list-template">
-		<a href="#/new" class="btn btn-primary">New</a>
+		<!-- <a href="#/new" class="btn btn-primary">New</a> -->
 		<button type="button" onclick="shareUrl()" class="btn btn-danger share">share</button>
             <span style="width: calc(100% - 50%); display: inline-flex;"><input type="text" style="display:none" name="shareable-url" id="form1" class="form-control"></span>
 			<button type="button" class="btn logout" >LOGOUT</button>
-			<hr />
-    <table class="table striped">
-      <thead>
+    		<table class="table striped">
+	  <thead>
         <tr>
-          <th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th><th></th>
+          <th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th><th></th><th></th>
         </tr>
-      </thead>
+			<tr>
+			<form class="add-item-form">
+            <td><div class="md-form">
+                        <input id="new-title" name="title" type="text" length="100" class="form-control">
+                        <label for="new-title">new Title</label>
+                      </div></td>
+            <td><div class="md-form">
+                        <input id="new-description" name="description" type="text" length="1000" class="form-control">
+                        <label for="new-description">new Description</label>
+                      </div></td>
+            <td><div class="md-form">
+                        <input id="new-url" name="url" type="text" length="100" class="form-control">
+                        <label for="new-url">new URL</label>
+                      </div></td>
+            <td> <div class="md-form">
+                        <input id="new-price" name="price" type="number" min="1" step="any" class="form-control">
+                        <label for="new-price">new price</label>
+                      </div></td>
+			<td style="vertical-align: middle;">
+					  <select id="new-priority" name="priority" class="browser-default custom-select">
+                        <option value="1" selected>Must Have</option>
+                        <option value="2" >Would be Nice to Have</option>
+						<option value="3" >If You Can</option>
+                      </select>
+					  </td>
+			<td style="vertical-align: middle;"><button type="button" style="background:#20c997" id="add-newitem" class="btn btn-deep add-newitem">add</button></td>
+			<!-- <td></td> -->
+			<!-- <hr/> -->
+			</form>
+		</tr>
+		</thead>
       <tbody>
-        <% _.each(list, function(item) { %>
+        <% _.each(list, function(item,index,list) { %>
           <tr>
-          <!-- <td><%= item.get('title') %></td>
-            <td><%= item.get('description') %></td>
-            <td><%= item.get('price') %></td> -->
-            <td><%= htmlEncode(item.get('title')) %></td>
-            <td><%= htmlEncode(item.get('description')) %></td>
-            <td><%= htmlEncode(item.get('url')) %></td>
-            <td><%= htmlEncode(item.get('price')) %></td>
-            <td><%= htmlEncode(item.get('priority')) %></td>
-            <td><a class="btn" href="#/edit/<%= item.id %>">Edit</a></td>
+			  
+		  	<% if(editID == index) { %>
+            <td><div class="md-form"><input id="edit-title" value="<%= item.get('title') %>" name="edit-title" type="text" length="100" class="form-control"></div></td>
+			<% }else{ %>
+			<td><%= htmlEncode(item.get('title')) %></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+            <td><div class="md-form"><input id="edit-description" value="<%= item.get('description') %>" name="edit-description" type="text" length="100" class="form-control"></div></td>
+			<% }else{ %>
+			<td><%= htmlEncode(item.get('description')) %></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+            <td><div class="md-form"><input id="edit-url" value="<%= item.get('url') %>" name="edit-url" type="text" length="100" class="form-control"></div></td>
+			<% }else{ %>
+			<td><%= htmlEncode(item.get('url')) %></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+            <td><div class="md-form"><input id="edit-price" value="<%= item.get('price') %>" name="edit-price" type="number" min="1" step="any"  class="form-control"></div></td>
+			<% }else{ %>
+			<td><%= htmlEncode(item.get('price')) %></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+            <td><div class="md-form"><select id="edit-priority" name="edit-priority" class="browser-default custom-select"><option value="1" <% if(item.get("priority") == 1) { %> selected <% } %> >Must Have</option><option value="2" <% if(item.get("priority") == 2) { %> selected <% } %> >Would be Nice to Have</option><option value="3" <% if(item.get("priority") == 3) { %> selected <% } %> >If You Can</option></select></div></td>
+			<% }else{ if(item.get('priority')== 1) { %>
+            <td>Must Have</td>            
+            <% }; %>      
+            <% if(item.get('priority')== 2) { %>
+            <td>Would be Nice to Have</td>            
+            <% }; %>
+            <% if(item.get('priority')== 3) { %>
+            <td>If You Can</td>            
+            <% }; }; %>
+
+			<% if(editID == index) { %>
+				<td><button data-item-id="<%= index %>" style="color:black"  class="btn btn-edit-save">Save</button></td>
+			<% }else{ %>
+				<td><button data-item-id="<%= index %>" style="color:black"  class="btn btn-edit-item">Edit</button></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+				<td><button data-item-id="<%= index %>" style="color:black"  class="btn btn-edit-cancel">Cancel</button></td>
+			<% }else{ %>
+				<td><button data-item-id="<%= item.id %>" style="color:black"  class="btn btn-delete-item">Delete</button></td>
+			<% }; %>
+
+			<% if(editID == index) { %>
+				<td><input type="hidden" id="edit-item-id" name="edit-item-id" value="<%= item.id %>" /></td>
+			<% }else{ %>
+			<td><input type="hidden" name="id" value="<%= item.id %>" />
+			<% }; %>
+			<!-- <td><%= item.get("id") %><td> -->
           </tr>
         <% }); %>
       </tbody>
     </table>
   </script>
 
-  <script type="text/template" id="share-list-template">
-    <hr />
+	<script type="text/template" id="share-list-template">
+		<hr />
     <table class="table striped">
       <thead>
         <tr>
-          <th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th>
+          <th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th><th></th><th></th>
         </tr>
       </thead>
       <tbody>
@@ -180,6 +255,30 @@
       </tbody>
     </table>
   </script>
+<!--
+	<script type="text/template" id="add-item-template">
+		<hr />
+    <table class="table striped">
+      <tbody>
+         <% _.each(list, function(item) { %>
+          <tr>
+          <td><%= item.get('title') %></td>
+            <td><%= item.get('description') %></td>
+            <td><%= item.get('price') %></td> 
+			<form class="add-item-form">
+			<hr/>
+            <td><input name="title" type="text" ></td>
+            <td> <input name="description" type="text"></td>
+            <td> <input name="url" type="text"></td>
+            <td> <input name="price" type="text"></td>
+            <td><input name="priority" type="text"></td>
+			<hr/>
+			</form>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+   </script> --> 
 
 	<script type="text/template" id="edit-item-template">
 		<form class="edit-item-form">
@@ -205,21 +304,22 @@
 
 	<script>
 		// var token = "";		
-			// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJmdWxsX25hbWUiOiJwYXZpdGggYnVkZGhpbWEiLCJ1c2VybmFtZSI6InBhdml0aGIiLCJlbWFpbCI6InBhdml0aEBnbWFpbC5jb20iLCJ0aW1lIjoxNTQ4MjU2OTAxfQ.DTSShZ5816yRs7MUAQelQVtvdmRUEgBjMgeP3E90pTk";
+		// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEiLCJmdWxsX25hbWUiOiJwYXZpdGggYnVkZGhpbWEiLCJ1c2VybmFtZSI6InBhdml0aGIiLCJlbWFpbCI6InBhdml0aEBnbWFpbC5jb20iLCJ0aW1lIjoxNTQ4MjU2OTAxfQ.DTSShZ5816yRs7MUAQelQVtvdmRUEgBjMgeP3E90pTk";
+
+		var maxWishlist = 99999;
+
+		var shareUrl = function () {
+			var shareURL = window.location.href;
+			console.log(shareURL);
+			// var res = shareURL.replace("wishlist", "sharelist");
+			var newstr = shareURL.replace(new RegExp("\\b" + "wishlist" + "\\b"), "sharelist");
+			document.getElementById("form1").value = newstr;
+			document.getElementById("form1").style.display = "block";
+			console.log(newstr);
 
 
-			var shareUrl = function(){
-				var shareURL = window.location.href;
-				console.log(shareURL);
-				// var res = shareURL.replace("wishlist", "sharelist");
-				var newstr = shareURL.replace(new RegExp("\\b"+"wishlist"+"\\b"), "sharelist");
-				document.getElementById("form1").value = newstr;
-				document.getElementById("form1").style.display = "block";
-				  console.log(newstr);
-
-
-				// return false;
-			} 
+			// return false;
+		}
 
 		function htmlEncode(value) {
 			return $('<div/>').text(value).html();
@@ -246,7 +346,7 @@
 		var User = Backbone.Model.extend({
 			urlRoot: '/user'
 		});
-		
+
 		var Item = Backbone.Model.extend({
 			urlRoot: '/item'
 		});
@@ -268,16 +368,18 @@
 			loginUser: function (ev) {
 				var loginetails = $(ev.currentTarget).serializeObject();
 				var user = new User();
-				user.save(loginetails, {success: function (user) {
+				user.save(loginetails, {
+					success: function (user) {
 						// token = user.attributes.data.token;
-						if (typeof(Storage) !== "undefined") {
+						if (typeof (Storage) !== "undefined") {
 							// Store token
 							sessionStorage.setItem("token", user.attributes.data.token);
-							}
-						router.navigate('#/wishlist/'+user.attributes.data.user_id, {
+						}
+						router.navigate('#/wishlist/' + user.attributes.data.user_id, {
 							trigger: true
 						});
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
@@ -287,12 +389,12 @@
 			},
 			render: function () {
 				var that = this;
-					var template = _.template($('#user-login-template').html(), {});
-					that.$el.html(template);
+				var template = _.template($('#user-login-template').html(), {});
+				that.$el.html(template);
 			}
 		});
 		var loginView = new LoginView();
-		
+
 		var SignupView = Backbone.View.extend({
 			el: '.page',
 			events: {
@@ -302,11 +404,14 @@
 			signupUser: function (ev) {
 				var signupDetails = $(ev.currentTarget).serializeObject();
 				var user = new User();
-				user.save(signupDetails, {url:"/user/register" ,success: function (user) {
+				user.save(signupDetails, {
+					url: "/user/register",
+					success: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('signup', {
 							trigger: true
 						});
@@ -316,33 +421,143 @@
 			},
 			render: function () {
 				var that = this;
-					var template = _.template($('#user-signup-template').html(), {});
-					that.$el.html(template);
+				var template = _.template($('#user-signup-template').html(), {});
+				that.$el.html(template);
 			}
 		});
-		
+
 		var signupView = new SignupView();
-		
+
+
+		// var addItemView = Backbone.View.extend({
+		// 	el: '.newItem',
+		// 	render: function () {
+		// 		var that = this;
+		// 		var addItem = _.template($('#add-item-template').html(), {});
+		// 		that.$el.html(addItem);
+		// 	}
+		// });
+
+		// var addItemView = new addItemView();
+
 		var WishListView = Backbone.View.extend({
 			el: '.page',
-			event: {
+			events: {
 				'click .share': 'shareView',
-				'click .logout': 'logout'
+				'click .logout': 'logout',
+				'click .add-newitem': 'addNewItem',
+				'click .btn-delete-item': 'deleteItem',
+				'click .btn-edit-item': 'editItem',
+				'click .btn-edit-save': 'editSave',
+				'click .btn-edit-cancel': 'editCancel'
+				
+			},
+			editSave: function(ev) {
+				var itemDetails = {
+					"title": $("#edit-title").val(),
+					"id": $("#edit-item-id").val(),
+					"description": $("#edit-description").val(),
+					"url": $("#edit-url").val(),
+					"price": $("#edit-price").val(),
+					"priority": $("#edit-priority").val()
+				}
+				var item = new Item();
+				item.save(itemDetails, {
+					headers: {
+						'Authorization': sessionStorage.getItem("token")
+					},
+					success: function (item) {
+						wishListView.render({id: sessionStorage.getItem("userID")}, maxWishlist);
+					},
+					error: function (user) {
+						router.navigate('', {
+							trigger: true
+						});
+					}
+				});
+				return false;
+			},
+			editCancel: function(ev) {
+				wishListView.render({id: sessionStorage.getItem("userID")}, maxWishlist);
 			},
 			shareView: function (ev) {
 				// var shareURL = window.location.href;
 				// console.log(shareURL);
 				// return false;
 			},
-			logout: function(ev){
+			logout: function (ev) {
 				sessionstorage.clear();
 				router.navigate('', {
+					trigger: true
+				});
+			},
+			deleteItem: function(ev){
+				// console.log(ev);
+				// ev.currentTarget.dataset.itemId
+				var that = this;
+					that.item = new Item({
+						id: ev.currentTarget.dataset.itemId
+					});
+					// that.item.fetch({
+						// headers: {
+							// 'Authorization': sessionStorage.getItem("token")
+						// },
+						// success: function (item) {
+							// var template = _.template($('#edit-item-template').html(), {
+							// 	item: item
+							// });
+							// that.$el.html(template);
+							that.item.destroy({
+							headers: {
+							'Authorization': sessionStorage.getItem("token")
+							},
+							success: function () {
+								//console.log('destroyed');
+								wishListView.render({id: sessionStorage.getItem("userID")}, maxWishlist);
+							},
+							error: function (user) {
+								router.navigate('', {
+									trigger: true
+								});
+					}
+				})
+						// }
+					// })
+				// 
+			},
+			addNewItem: function(ev){
+				var itemDetails = {
+					"title": $("#new-title").val(),
+					"description": $("#new-description").val(),
+					"url": $("#new-url").val(),
+					"price": $("#new-price").val(),
+					"priority": $("#new-priority").val()
+				}
+				// var itemDetails = $(ev.currentTarget).serializeObject();
+				var item = new Item();
+				item.save(itemDetails, {
+					headers: {
+						'Authorization': sessionStorage.getItem("token")
+					},
+					success: function (item) {
+						// render(sessionStorage.getItem("userID"));
+						wishListView.render({id: sessionStorage.getItem("userID")}, maxWishlist);
+					},
+					error: function (user) {
+						router.navigate('', {
 							trigger: true
 						});
-			}
-			render: function (options) {
+					}
+				});
+				return false;
+			},
+			editItem: function(ev){
+				wishListView.render({id: sessionStorage.getItem("userID")}, ev.currentTarget.dataset.itemId);
+			},
+			render: function (options, idEdit) {
 				var that = this;
 				var list = new WishList();
+				sessionStorage.setItem("userID", options.id);
 				// collection.fetch({ data: $.param({ page: 1}) });
 
 				list.fetch({
@@ -355,10 +570,12 @@
 					success: function (list) {
 						// var data = list.models[0].attributes.data;
 						var template = _.template($('#item-list-template').html(), {
-							list: list.models
+							list: list.models,
+							editID: idEdit
 						});
 						that.$el.html(template);
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
@@ -367,6 +584,8 @@
 			}
 		});
 		var wishListView = new WishListView();
+
+
 
 		var ItemEditView = Backbone.View.extend({
 			el: '.page',
@@ -382,10 +601,11 @@
 						'Authorization': sessionStorage.getItem("token")
 					},
 					success: function (item) {
-						router.navigate('', {
+						router.navigate('/wishlist/3', {
 							trigger: true
 						});
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
@@ -403,7 +623,8 @@
 						router.navigate('', {
 							trigger: true
 						});
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
@@ -440,20 +661,24 @@
 		//////////
 		var ShareListView = Backbone.View.extend({
 			el: '.page',
-			render: function (options) {	
+			render: function (options) {
 				var that = this;
 				var list = new WishList();
 				// collection.fetch({ data: $.param({ page: 1}) });
 
 				list.fetch({
-					data: $.param({id: options.id}),url:"/item/sharelist",
+					data: $.param({
+						id: options.id
+					}),
+					url: "/item/sharelist",
 					success: function (list) {
 						// var data = list.models[0].attributes.data;
 						var template = _.template($('#share-list-template').html(), {
 							list: list.models
 						});
 						that.$el.html(template);
-					},error: function(user){
+					},
+					error: function (user) {
 						router.navigate('', {
 							trigger: true
 						});
@@ -479,8 +704,8 @@
 		router.on('route:wishlist', function (id) {
 			// render item list
 			wishListView.render({
-				id:id
-			});
+				id: id
+			}, maxWishlist);
 		})
 		router.on('route:edit', function (id) {
 			itemEditView.render({
