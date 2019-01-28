@@ -56,6 +56,7 @@ $route['translate_uri_dashes'] = FALSE;
 // User API Routes
 $route['api/user/register'] = 'api/users/register';
 $route['api/user']["POST"] = 'api/users/login';
+$route['api/user']["GET"] = 'api/users/user';
 
 // Users Article Routes
 $route['api/article/create'] = 'api/articles/createArticle';

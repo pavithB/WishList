@@ -36,4 +36,22 @@ class User_Model extends CI_Model
             return FALSE;
         }
     }
+
+     /**
+     * get user details
+     * @param: User ID
+     */
+    public function viewUserDetails($user_ID)
+    {
+        $this->db->where('id', $user_ID);
+        $query = $this->db->get($this->user_table);
+
+        if ($query->num_rows() > 0) {
+            foreach ($query->result() as $row) {
+                $data = $row;
+            }
+            return $data;
+        }
+        return false;
+    }
 }

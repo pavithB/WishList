@@ -41,9 +41,9 @@ class Users extends \Restserver\Libraries\REST_Controller
         
         # Form Validation
         $this->form_validation->set_rules('full_name', 'Full Name', 'trim|required|max_length[50]');
-        $this->form_validation->set_rules('username', 'Username', 'trim|required|is_unique[users.username]|alpha_numeric|max_length[20]',
+        $this->form_validation->set_rules('username', 'Username', 'trim|required|is_unique[users.username]|max_length[20]',
             array('is_unique' => 'This %s already exists please enter another username'));
-        $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|max_length[80]|is_unique[users.email]',
+        $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|max_length[80]',
             array('is_unique' => 'This %s already exists please enter another email address'));
         $this->form_validation->set_rules('password', 'Password', 'trim|required|max_length[100]');
         $this->form_validation->set_rules('wishlist_name', 'Wishlist Name', 'trim|required|max_length[100]');
@@ -151,6 +151,8 @@ class Users extends \Restserver\Libraries\REST_Controller
                     'user_id' => $output->id,
                     'full_name' => $output->full_name,
                     'email' => $output->email,
+                    'wishlist_name' => $output->wishlist_name,
+                    'wishlist_description' => $output->wishlist_description,
                     'token' => $user_token,
                 ];
 
@@ -172,4 +174,58 @@ class Users extends \Restserver\Libraries\REST_Controller
             }
         }
     }
+
+/**
+     * View Items in sharelist
+     * -------------------------
+     * @method: GET
+     */
+    public function user_get()
+    {
+       
+            $_GET = $this->security->xss_clean($_GET);
+
+            $id = $this->input->get('id');
+
+            if (empty($id) AND !is_numeric($id))
+            {
+                $this->response(['status' => FALSE, 'message' => 'Invalid user id' ], REST_Controller::HTTP_NOT_FOUND);
+            }
+            else
+            {
+            
+            
+            // Load Login Function
+            $output = $this->UserModel->viewUserDetails($id);
+            if (!empty($output) AND $output != FALSE)
+            {
+                $return_data = [
+                    'user_id' => $output->id,
+                    'full_name' => $output->full_name,
+                    'wishlist_name' => $output->wishlist_name,
+                    'wishlist_description' => $output->wishlist_description
+                ];
+
+                // data retrive sucessfull
+                $message = [
+                    'status' => true,
+                    'data' => $return_data,
+                    'message' => "user: ".$id." wish list"
+                ];
+                $this->response($message, REST_Controller::HTTP_OK);
+                
+            } else 
+            {
+                 // no items for user
+                $message = [
+                    'status' => FALSE,
+                    'message' => "no item available"
+                ];
+                $this->response($message, REST_Controller::HTTP_NOT_FOUND);
+            }
+        }
+
+    }
+
+
 }
