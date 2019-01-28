@@ -54,44 +54,26 @@ $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
 // User API Routes
-$route['api/user/register'] = 'api/users/register';
-$route['api/user']["POST"] = 'api/users/login';
-$route['api/user']["GET"] = 'api/users/user';
-
-// Users Article Routes
-$route['api/article/create'] = 'api/articles/createArticle';
-
-// Deleta an Article Routes
-# https://codeigniter.com/user_guide/general/routing.html#using-http-verbs-in-routes
-$route['api/article/(:num)/delete']["DELETE"] = 'api/articles/deleteArticle/$1';
-
-// Update and Article Route :: PUT API Request
-$route['api/article/update']["put"] = 'api/articles/updateArticle';
-
+$route['api/user/register'] = 'api/ApiHandler/register';
+$route['api/user']["POST"] = 'api/ApiHandler/login';
+$route['api/user']["GET"] = 'api/ApiHandler/user';
 
 
 // Users item Routes
-$route['api/item']["POST"] = 'api/items/item';
+$route['api/item']["POST"] = 'api/ApiHandler/item';
 
 // Deleta an item Routes
 # https://codeigniter.com/user_guide/general/routing.html#using-http-verbs-in-routes
-$route['api/item/(:num)']["DELETE"] = 'api/items/item/$1';
+$route['api/item/(:num)']["DELETE"] = 'api/ApiHandler/item/$1';
 
 // Update and item Route :: PUT API Request
-$route['api/item/(:num)']["put"] = 'api/items/item/$1';
+$route['api/item/(:num)']["put"] = 'api/ApiHandler/item/$1';
 
 // View all Items in Wishlist 
-$route['api/item']["GET"] = 'api/items/wishlist';
+$route['api/item']["GET"] = 'api/ApiHandler/wishlist';
 
 // View all Items in sharelist 
-$route['api/item/sharelist']["GET"] = 'api/items/sharelist';
+$route['api/item/sharelist']["GET"] = 'api/ApiHandler/sharelist';
 
-$route['api/item/(:num)']["GET"] = 'api/items/item/$1';
-
-// Users item Routes
-// $route['api/item/receive'] = 'api/items/item';
-
-// $route['api/item/receive/(:num)'] = 'api/item/item/id/$1';
-
-// $route['api/item/receive/(:num)(\.)([a-zA-Z0-9_-]+)(.*)'] = 'api/item/item/id/$1/format/$3$4'; // Example 8
+$route['api/item/(:num)']["GET"] = 'api/ApiHandler/item/$1';
 
