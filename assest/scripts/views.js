@@ -141,9 +141,14 @@
 				if (shareurl.style.display === "none") {
 					var shareURL = window.location.href;
 					var newstr = shareURL.replace(new RegExp("\\b" + "wishlist" + "\\b"), "sharelist");
-					shareurl.value = newstr;
+
 					shareurl.style.display = "block";
 
+					var pre = newstr.substring(0, newstr.lastIndexOf("/") + 1);
+					var last = newstr.substring(newstr.lastIndexOf("/") + 1, newstr.length);
+					var encordedId = btoa(last);
+					var newstr = pre + encordedId;
+					shareurl.value = newstr;
 					// var dummyContent = newstr;
 					// var dummy = $('<input>').val(dummyContent).appendTo('body').select();
 					// document.execCommand('copy');

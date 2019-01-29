@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<title>>w i s h _ L i s t<</title>
 	<link rel="icon" type="image/png" href="<?php echo base_url(); ?>assest/images/favicon.png"/>
-	<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/css/bootstrap.min.css">
+	<!-- <link rel="stylesheet" href="<?php echo base_url(); ?>assest/css/bootstrap.min.css"> -->
 	<link rel="stylesheet" href="<?php echo base_url(); ?>assest/css/font-awesome.min.css">
 	<!-- Bootstrap core CSS -->
 	<link href="<?php echo base_url(); ?>assest/css/bootstrap.min.css" rel="stylesheet">
@@ -15,16 +15,19 @@
 <body>
 	<div class="container">
 		<!-- <h1>WISH LIST</h1>	 -->
+		
 		<hr />
 		<div class="newItem"></div>
 		<div class="page"></div>
 	</div>
 
 
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js" type="text/javascript"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.2/backbone-min.js"></script>	
+	<script src="<?php echo base_url(); ?>assest/js/jquery.min.js" type="text/javascript"></script>
+	<script src="<?php echo base_url(); ?>assest/js/underscore-min.js" type="text/javascript"></script>
+	<script src="<?php echo base_url(); ?>assest/js/backbone-min.js"></script>	
 	<script src="<?php echo base_url(); ?>assest/js/sweetalert.min.js"></script>
+	<script src="<?php echo base_url(); ?>assest/scripts/model.js"></script>
+	<!-- <script src="<?php echo base_url(); ?>assest/scripts/collection.js"></script> -->
 	<script src="<?php echo base_url(); ?>assest/scripts/views.js"></script>
 
 	<!-- Bootstrap core JavaScript -->
@@ -314,7 +317,7 @@
 		</tr>
 		</thead>
 		</tbody>
-		<% _.each(list, function(item) { %>
+		<% _.each(list, function(item,index,size) { %>
 			<tr>
             <td><div class="md-form">
                         <input id="share-title" value="<%= htmlEncode(item.get('title')) %>" disabled name="title" type="text" length="100" class="form-control">
@@ -340,9 +343,34 @@
             <% if(item.get('priority')== 3) { %>
             <input id="share-priority" value="If You Can" name="priority" disabled type="text" class="form-control">
             <% }; %>
-					  </div></td>
-					  <td><button data-item-title="<%=  item.get('title') %>" data-item-description="<%= item.get('description') %>}" data-item-url="<%=  item.get('url') %>" data-item-price="<%= item.get('price') %>}" data-item-priority="<%= item.get('priority') %>}" type="button" class="btn btn-share-Item">click</button></td>
+				</div></td>
+				<td><button style="color:black" data-toggle="modal" data-target="#exampleModal<%= index %>" class="	 btn-share-Item2"><i class="fa fa-expand" aria-hidden="true"></i></button></td>
+				<!-- data-item-title="<%=  item.get('title') %>" data-item-description="<%= item.get('description') %>}" data-item-url="<%=  item.get('url') %>" data-item-price="<%= item.get('price') %>}" data-item-priority="<%= item.get('priority') %>}" type="button"  -->
 		</tr>
+		<!--  -->
+
+<div class="modal fade" id="exampleModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div style="    border-radius: 40px;" class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"><%=  item.get('title') %></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+		  <div><label>description</label><textarea type="text" name="username" disabled id="form2"  class="form-control"><%= item.get('description') %></textarea></div>
+		  <div><label>URL</label><input type="text" name="url" disabled id="form2" value="<%= item.get('url') %>" class="form-control"></div>
+		  <div><label>Price</label><input type="number" name="price" disabled id="form2" value="<%= item.get('price') %>" class="form-control"></div>
+		  <div><label>Priority</label><input type="text" name="username" disabled id="form2" value="<%= item.get('priority') %>" class="form-control"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+		<!--  -->
 		<% }); %>
 		</tbody>
    </script> 
@@ -393,26 +421,6 @@
 			});
 			return o;
 		};
-		$.ajaxPrefilter(function (options, originalOptions, jqXHR) {
-			options.url = 'http://localhost/wishlistcw/api' + options.url;
-		});
-
-		var User = Backbone.Model.extend({
-			urlRoot: '/user'
-		});
-
-		var Item = Backbone.Model.extend({
-			urlRoot: '/item'
-		});
-
-		var WishList = Backbone.Collection.extend({
-			url: '/item',
-			comparator: function (m) {
-				return m.get('priority');
-			},
-			model: Item
-		});
-
 
 
 		var Router = Backbone.Router.extend({
@@ -445,15 +453,16 @@
 		})
 		router.on('route:sharelist', function (id) {
 			sharelistView.render({
-				id: id
+				id: atob(id)
 			});
 		})
+
+		// 
+		// shareListView.render({id: atob(id)})
 		
 		Backbone.history.start();
 
 	</script>
-
-
 </body>
 
 </html>
