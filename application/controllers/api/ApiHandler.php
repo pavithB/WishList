@@ -263,6 +263,7 @@ class ApiHandler extends \Restserver\Libraries\REST_Controller
                     // Success
                     $message = [
                         'status' => true,
+                        'id' => $output,
                         'message' => "Item Add"
                     ];
                     $this->response($message, REST_Controller::HTTP_OK);
