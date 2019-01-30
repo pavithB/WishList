@@ -169,10 +169,10 @@
 		<button type="button" data-toggle="tooltip" title="LOGOUT" style="float:right;    margin-left: 10%;" class="btn btn-danger btn-logout" ><i class="fa fa-sign-out" aria-hidden="true"></i></button>
 		</div>
 
-    	<table style="    margin-top: 20px;" class="table striped">
+    	<table style="margin-top: 20px;" class="table striped">
 			<thead class="thead-light">
 			<tr>
-			<th>Title</th><th>Description</th><th>url</th><th>Price</th><th>Piority</th><th></th><th></th>
+			<th>Title</th><th style="max-width:55px">Description</th><th>url</th><th>Price</th><th>Piority</th><th></th><th></th>
 			</tr>
 				<tr style="background:#e3e4e3">
 				<form class="add-item-form">
@@ -279,12 +279,12 @@
 	<script type="text/template" id="share-list-template">
 		<div style="display:flex">
 		<div style="flex:0 0 25%;text-align:center">
-					<img  style="width: 650px;" src="<?php echo base_url(); ?>assest/images/cover.png" >
+					<img  style="width: 350px;" src="<?php echo base_url(); ?>assest/images/cover.png" >
 		</div>
 		<div style="flex:1">
 		<h2 class="h1-responsive font-weight-bold my-5" id="share-view-wishlist-header" style="text-transform: uppercase; text-align: center;margin-bottom: 0px!important;"></h2>
 				</div>
-		<div style="display:flex;    display: flex;
+		<div data-toggle="tooltip" title="Wish-List Owner" style="display:flex;    display: flex;
 			font-size: 1.2rem;"><i class="fa fa-user prefix" aria-hidden="true"></i><span style="    margin-left: 15px;"  id="share-user"></span></div>
 		</div>
 
@@ -340,19 +340,30 @@
 				<!--  -->
 
 		<div class="modal fade" id="exampleModal<%= index %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div style="    border-radius: 40px;" class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="exampleModalLabel"><%=  item.get('title') %></h5>
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		<div class="modal-dialog" style="    margin: 164px 134px 124px 264px;" role="document">
+			<div style="    border-radius: 40px;width:1060PX" class="modal-content">
+			<div style="display:flex" class="modal-header">
+				<div style="flex:1"><h5 class="modal-title" style="text-align:center;font-weight:900" id="exampleModalLabel"><%=  item.get('title') %></h5></div>
+				<div><button type="button" class="close" data-dismiss="modal" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
-				</button>
+				</button></div>
 			</div>
 			<div class="modal-body">
-				<div><label>description</label><textarea readonly type="text" name="username" id="form2"  class="form-control"><%= item.get('description') %></textarea></div>
-				<div><label>URL</label><input type="text" name="url" disabled id="form2" value="<%= item.get('url') %>" class="form-control"></div>
-				<div><label>Price</label><input type="number" name="price" disabled id="form2" value="<%= item.get('price') %>" class="form-control"></div>
-				<div><label>Priority</label><input type="text" name="username" disabled id="form2" value="<%= item.get('priority') %>" class="form-control"></div>
+				<div style="margin-top:10px"><label>Description:</label><textarea readonly type="text" name="username" id="form2"  class="form-control"><%= item.get('description') %></textarea></div>
+				<!-- <div><label>URL</label><input type="text" name="url" disabled id="form2" value="<%= item.get('url') %>" class="form-control"></div> -->
+
+				<div style="margin-top:10px"><label>URL:</label><br/><a target="_blank" href="<%= item.get('url') %> "><%= item.get('url') %></a></div>
+				
+				<div style="margin-top:10px"><label>Price:</label><input type="number" name="price" disabled id="form2" value="<%= item.get('price') %>" class="form-control"></div>
+				<div style="margin-top:10px"><label>Priority:</label><input type="text" name="username" disabled id="form2" <% if(item.get('priority')== 1) { %>
+					 value="Must Have" 
+					<% }; %>      
+					<% if(item.get('priority')== 2) { %>
+					value="Would be Nice to Have"
+					<% }; %>
+					<% if(item.get('priority')== 3) { %>
+					value="If You Can"
+					<% }; %> class="form-control"></div>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
